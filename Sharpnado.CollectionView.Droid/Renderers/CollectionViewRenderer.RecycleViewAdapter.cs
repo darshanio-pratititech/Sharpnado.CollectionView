@@ -139,7 +139,7 @@ namespace Sharpnado.CollectionView.Droid.Renderers
 
                 _formsViews = new List<WeakReference<ViewCell>>();
 
-                if (_element.ItemTemplate is not DataTemplateSelector)
+                if (!(_element.ItemTemplate is DataTemplateSelector))
                 {
                     // Cache only support single DataTemplate
                     _viewHolderQueue = new ViewHolderQueue(element.ViewCacheSize, () => CreateViewHolder());

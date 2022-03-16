@@ -80,9 +80,10 @@ namespace Sharpnado.CollectionView.iOS.Renderers
                         from = (int)selectedIndexPath.Item;
                         Control.BeginInteractiveMovementForItem(selectedIndexPath);
                         Element.IsDragAndDropping = true;
-
+                        int toMovingValue = (pathTo != null) ? (int)pathTo.Item : -1;
+                        Element.SendDragStarted(from, toMovingValue, Element.BindingContext);
                         Element.DragAndDropStartedCommand?.Execute(
-                            new DragAndDropInfo(from, -1, Element.BindingContext));
+                            new DragAndDropInfo(from, toMovingValue, Element.BindingContext));
                     }
 
                     break;
@@ -108,8 +109,21 @@ namespace Sharpnado.CollectionView.iOS.Renderers
                             return;
                         }
 
-                        pathTo = changedPath;
+                        //v.bringToFront();
 
+                        var view = this.Subviews[0].Subviews[0];
+
+                        // For scrolling
+                        pathTo = changedPath;
+                        int toMovingValue = (pathTo != null) ? (int)pathTo.Item : -1;
+                        Element.SendDragStarted(from, toMovingValue, Element.BindingContext);
+                        Element.DragAndDropStartedCommand?.Execute(
+                            new DragAndDropInfo(from, toMovingValue, Element.BindingContext));
+
+                        BringSubviewToFront(draggedViewCell);
+
+                        //BringSubviewToFront(draggedViewCell);
+                        //InvalidateIntrinsicContentSize();
                         // System.Diagnostics.Debug.WriteLine($"State changed to {pathTo.Item}");
                     }
 
@@ -126,6 +140,8 @@ namespace Sharpnado.CollectionView.iOS.Renderers
                             break;
                     }
 
+                    BringSubviewToFront(draggedViewCell);
+                    
                     break;
 
                 case UIGestureRecognizerState.Ended:
@@ -161,6 +177,7 @@ namespace Sharpnado.CollectionView.iOS.Renderers
                             if (draggedViewCell?.FormsCell is DraggableViewCell draggableViewCell)
                             {
                                 draggableViewCell.IsDragAndDropping = false;
+                                Element.SendDragEnded(from, to, draggableViewCell.BindingContext);
                                 Element.DragAndDropEndedCommand?.Execute(
                                     new DragAndDropInfo(from, to, draggableViewCell.BindingContext));
                             }

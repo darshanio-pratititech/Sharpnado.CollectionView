@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Sharpnado.CollectionView.Paging;
-
+using Sharpnado.CollectionView.ViewModels;
 using Xamarin.Forms;
 
 namespace Sharpnado.CollectionView.RenderedViews
@@ -227,6 +228,10 @@ namespace Sharpnado.CollectionView.RenderedViews
 
         public event EventHandler<CollectionLayoutChangedEventArgs> CollectionLayoutChanging;
 
+        public event EventHandler<DragAndDropEventArgs> DragStarted;
+
+        public event EventHandler<DragAndDropEventArgs> DragEnded;
+
         public DragAndDropTrigger DragAndDropTrigger { get; set; } = DragAndDropTrigger.LongTap;
 
         public int CurrentIndex
@@ -388,6 +393,20 @@ namespace Sharpnado.CollectionView.RenderedViews
             || CollectionLayout == CollectionViewLayout.Vertical;
 
         public bool AnimateScroll { get; set; }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void SendDragStarted(int from, int to, object content)
+        {
+            DragStarted?.Invoke(this, new DragAndDropEventArgs(from, to, content));
+        }
+
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void SendDragEnded(int from, int to, object content)
+        {
+            DragEnded?.Invoke(this, new DragAndDropEventArgs(from, to, content));
+        }
 
         public void ScrollTo(int index, bool animateScroll = true)
         {

@@ -2,7 +2,7 @@
 using System.Windows.Input;
 
 using Android.Runtime;
-
+using Android.Views;
 using AndroidX.RecyclerView.Widget;
 
 using Sharpnado.CollectionView.RenderedViews;
@@ -83,6 +83,8 @@ namespace Sharpnado.CollectionView.Droid.Renderers
                         _draggedViewCell = draggableViewCell;
                     }
 
+                    _collection.SendDragStarted(viewHolder.AdapterPosition, -1, ((ViewHolder)viewHolder).BindingContext);
+
                     _onDragAndDropStart?.Execute(new DragAndDropInfo(
                         viewHolder.AdapterPosition,
                         -1,
@@ -125,7 +127,11 @@ namespace Sharpnado.CollectionView.Droid.Renderers
 
                 // System.Diagnostics.Debug.WriteLine($">>>>> OnMove( from: {_from}, to: {_to} )");
                 _recycleViewAdapter.OnItemMoving(viewHolder.AdapterPosition, target.AdapterPosition);
-
+                _collection.SendDragStarted(_from, _to, ((ViewHolder)viewHolder).BindingContext);
+                _onDragAndDropStart?.Execute(new DragAndDropInfo(
+                       _from,
+                       _to,
+                       ((ViewHolder)viewHolder).BindingContext));
                 return true;
             }
 
@@ -161,6 +167,7 @@ namespace Sharpnado.CollectionView.Droid.Renderers
                 if (_from > -1 && _to > -1)
                 {
                     _recycleViewAdapter.OnItemMovedFromDragAndDrop(_from, _to);
+                    _collection?.SendDragEnded(_from, _to, ((ViewHolder)viewHolder).BindingContext);
                     _onDragAndDropdEnded?.Execute(new DragAndDropInfo(
                         _from,
                         _to,
