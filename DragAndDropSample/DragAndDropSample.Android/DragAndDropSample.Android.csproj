@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sharpnado.CollectionView.Droid\Sharpnado.CollectionView.Droid.csproj">
-      <Project>{92E0ECFC-C8C0-4C03-BA61-A2701390D7DE}</Project>
+      <Project>{F2D4F3E6-CB34-4D17-92CA-0A9BFDE9C811}</Project>
       <Name>Sharpnado.CollectionView.Droid</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Sharpnado.CollectionView\Sharpnado.CollectionView.csproj">
